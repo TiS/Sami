@@ -2,6 +2,7 @@
 
 namespace Sami\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Sami\Project;
 use Sami\Reflection\ClassReflection;
 use Sami\Store\ArrayStore;
@@ -10,7 +11,7 @@ use Sami\Tree;
 /**
  * @author Tomasz Struczyński <t.struczynski@gmail.com>
  */
-class TreeTest extends \PHPUnit_Framework_TestCase
+class TreeTest extends TestCase
 {
     public function testNamespaces()
     {
@@ -31,7 +32,7 @@ class TreeTest extends \PHPUnit_Framework_TestCase
         $tree = new Tree();
 
         $generated = $tree->getTree($project);
-        $this->assertCount(3 ,$generated);
+        $this->assertCount(3, $generated);
 
         $this->assertEquals('[Global Namespace]', $generated[0][0]);
         $this->assertEquals('', $generated[0][1]);

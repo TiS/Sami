@@ -408,7 +408,7 @@ class ClassReflection extends Reflection
 
     public function getMethod($name)
     {
-        return isset($this->methods[$name]) ? $this->methods[$name] : false;
+        return $this->methods[$name] ?? false;
     }
 
     public function getParentMethod($name)
@@ -557,7 +557,7 @@ class ClassReflection extends Reflection
 
     public function isInterface()
     {
-        return $this->category === self::CATEGORY_INTERFACE;
+        return self::CATEGORY_INTERFACE === $this->category;
     }
 
     public function setTrait($boolean)
@@ -567,7 +567,7 @@ class ClassReflection extends Reflection
 
     public function isTrait()
     {
-        return $this->category === self::CATEGORY_TRAIT;
+        return self::CATEGORY_TRAIT === $this->category;
     }
 
     public function setCategory($category)
@@ -638,9 +638,15 @@ class ClassReflection extends Reflection
             'errors' => $this->errors,
             'interfaces' => $this->interfaces,
             'traits' => $this->traits,
-            'properties' => array_map(function ($property) { return $property->toArray(); }, $this->properties),
-            'methods' => array_map(function ($method) { return $method->toArray(); }, $this->methods),
-            'constants' => array_map(function ($constant) { return $constant->toArray(); }, $this->constants),
+            'properties' => array_map(function ($property) {
+                return $property->toArray();
+            }, $this->properties),
+            'methods' => array_map(function ($method) {
+                return $method->toArray();
+            }, $this->methods),
+            'constants' => array_map(function ($constant) {
+                return $constant->toArray();
+            }, $this->constants),
         );
     }
 
@@ -690,5 +696,14 @@ class ClassReflection extends Reflection
     public function getCategoryName()
     {
         return self::$categoryName[$this->category];
+    }
+
+    public function sortInterfaces($sort)
+    {
+        if (is_callable($sort)) {
+            uksort($this->interfaces, $sort);
+        } else {
+            ksort($this->interfaces);
+        }
     }
 }

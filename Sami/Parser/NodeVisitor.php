@@ -92,6 +92,11 @@ class NodeVisitor extends NodeVisitorAbstract
 
     protected function addClass(ClassNode $node)
     {
+        // Skip anonymous classes
+        if ($node->isAnonymous()) {
+            return;
+        }
+
         $class = $this->addClassOrInterface($node);
 
         foreach ($node->implements as $interface) {
@@ -113,7 +118,7 @@ class NodeVisitor extends NodeVisitorAbstract
     protected function addClassOrInterface(ClassLikeNode $node)
     {
         $class = new ClassReflection((string) $node->namespacedName, $node->getLine());
-        if ($class instanceof ClassNode) {
+        if ($node instanceof ClassNode) {
             $class->setModifiers($node->flags);
         }
         $class->setNamespace($this->context->getNamespace());
@@ -156,6 +161,8 @@ class NodeVisitor extends NodeVisitorAbstract
                 $parameter->setDefault($this->context->getPrettyPrinter()->prettyPrintExpr($param->default));
             }
 
+            $parameter->setVariadic($param->variadic);
+
             $type = $param->type;
             $typeStr = null;
 
@@ -165,16 +172,22 @@ class NodeVisitor extends NodeVisitorAbstract
             } elseif ($param->type instanceof NullableType) {
                 $type = $param->type->type;
                 $typeStr = (string) $param->type->type;
-            } elseif ($param->type !== null) {
+            } elseif (null !== $param->type) {
                 $typeStr = (string) $param->type;
             }
 
-            if ($type instanceof FullyQualified && strpos($typeStr, '\\') !== 0) {
+            if ($type instanceof FullyQualified && 0 !== strpos($typeStr, '\\')) {
                 $typeStr = '\\'.$typeStr;
             }
 
-            if ($typeStr !== null) {
-                $parameter->setHint($this->resolveHint(array(array($typeStr, false))));
+            if (null !== $typeStr) {
+                $typeArr = array(array($typeStr, false));
+
+                if ($param->type instanceof NullableType) {
+                    $typeArr[] = array('null', false);
+                }
+
+                $parameter->setHint($this->resolveHint($typeArr));
             }
 
             $method->addParameter($parameter);

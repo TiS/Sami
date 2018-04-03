@@ -11,9 +11,10 @@
 
 namespace Sami\Tests\Parser\ClassVisitor;
 
+use PHPUnit\Framework\TestCase;
 use Sami\Parser\ClassVisitor\MethodClassVisitor;
 
-class MethodClassVisitorTest extends \PHPUnit_Framework_TestCase
+class MethodClassVisitorTest extends TestCase
 {
     public function testAddsMethods()
     {
@@ -32,6 +33,6 @@ class MethodClassVisitorTest extends \PHPUnit_Framework_TestCase
         $visitor = new MethodClassVisitor();
         $visitor->visit($class);
 
-        $this->assertTrue(array_key_exists('askQuestion', $class->getMethods()));
+        $this->assertArrayHasKey('askQuestion', $class->getMethods());
     }
 }

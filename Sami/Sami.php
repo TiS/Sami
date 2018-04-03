@@ -34,7 +34,7 @@ use Sami\Version\Version;
 
 class Sami extends Container
 {
-    const VERSION = '4.0.4-DEV';
+    const VERSION = '4.0.14-DEV';
 
     public function __construct($iterator = null, array $config = array())
     {
@@ -47,7 +47,7 @@ class Sami extends Container
         }
 
         $this['_versions'] = function ($sc) {
-            $versions = isset($sc['versions']) ? $sc['versions'] : $sc['version'];
+            $versions = $sc['versions'] ?? $sc['version'];
 
             if (is_string($versions)) {
                 $versions = new Version($versions);
@@ -73,6 +73,11 @@ class Sami extends Container
                 'source_url' => $sc['source_url'],
                 'source_dir' => $sc['source_dir'],
                 'insert_todos' => $sc['insert_todos'],
+                'sort_class_properties' => $sc['sort_class_properties'],
+                'sort_class_methods' => $sc['sort_class_methods'],
+                'sort_class_constants' => $sc['sort_class_constants'],
+                'sort_class_traits' => $sc['sort_class_traits'],
+                'sort_class_interfaces' => $sc['sort_class_interfaces'],
             ));
             $project->setRenderer($sc['renderer']);
             $project->setParser($sc['parser']);
@@ -176,6 +181,11 @@ class Sami extends Container
         $this['source_url'] = '';
         $this['default_opened_level'] = 2;
         $this['insert_todos'] = false;
+        $this['sort_class_properties'] = false;
+        $this['sort_class_methods'] = false;
+        $this['sort_class_constants'] = false;
+        $this['sort_class_traits'] = false;
+        $this['sort_class_interfaces'] = false;
 
         // simulate namespaces for projects based on the PEAR naming conventions
         $this['simulate_namespaces'] = false;

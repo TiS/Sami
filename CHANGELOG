@@ -1,9 +1,57 @@
 CHANGELOG
 =========
 
-* 4.0.4 (2017-XX-XX)
+* 4.0.15 (2018-XX-XX)
 
  * n/a
+
+* 4.0.14 (2018-02-05)
+
+ * fixed type null for nullable type parameters not added as type (PHP 7)
+
+* 4.0.13 (2018-01-10)
+
+ * implemented option to sort properties, methods, constants, traits and interfaces
+ * fixed class properties display
+
+* 4.0.12 (2017-12-31)
+
+ * added support for variadics
+
+* 4.0.11 (2017-12-20)
+
+ * fixed "0" as default value not shown
+
+* 4.0.10 (2017-11-08)
+
+ * fixed cache bug
+
+* 4.0.9 (2017-10-28)
+
+ * prevented scope collision in Sami config file
+ * fixed wrong variable using in NodeVisitor
+
+* 4.0.8 (2017-09-05)
+
+ * fixed counting of non-countable versions for PHP 7.2
+
+* 4.0.7 (2017-09-05)
+
+ * made Sami skip anonymous classes
+ * fixed Sami for PHP 7.2
+ * made sure VersionCollection::$versions is always an array
+
+* 4.0.6 (2017-06-08)
+
+ * corrected docblock based method parameters
+
+* 4.0.5 (2017-06-06)
+
+ * corrected node visitor to correctly resolve hints to class parameters
+
+* 4.0.4 (2017-05-31)
+
+ * made it possible to copy namespace from the UI
 
 * 4.0.3 (2017-05-05)
 

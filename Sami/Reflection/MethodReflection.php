@@ -103,10 +103,10 @@ class MethodReflection extends Reflection
         if (ctype_digit((string) $name)) {
             $tmp = array_values($this->parameters);
 
-            return isset($tmp[$name]) ? $tmp[$name] : null;
+            return $tmp[$name] ?? null;
         }
 
-        return isset($this->parameters[$name]) ? $this->parameters[$name] : null;
+        return $this->parameters[$name] ?? null;
     }
 
     /*
@@ -167,7 +167,9 @@ class MethodReflection extends Reflection
             'is_by_ref' => $this->byRef,
             'exceptions' => $this->exceptions,
             'errors' => $this->errors,
-            'parameters' => array_map(function ($parameter) { return $parameter->toArray(); }, $this->parameters),
+            'parameters' => array_map(function ($parameter) {
+                return $parameter->toArray();
+            }, $this->parameters),
         );
     }
 

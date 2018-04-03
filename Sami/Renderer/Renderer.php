@@ -35,7 +35,7 @@ class Renderer
         $this->twig = $twig;
         $this->themes = $themes;
         $this->tree = $tree;
-        $this->cachedTree = new \SplObjectStorage();
+        $this->cachedTree = array();
         $this->indexer = $indexer;
         $this->filesystem = new Filesystem();
     }
@@ -160,12 +160,61 @@ class Renderer
                 call_user_func($callback, Message::RENDER_PROGRESS, array('Class', $class->getName(), $this->getProgression()));
             }
 
+            $properties = $class->getProperties($project->getConfig('include_parent_data'));
+
+            $sortProperties = $project->getConfig('sort_class_properties');
+            if ($sortProperties) {
+                if (is_callable($sortProperties)) {
+                    uksort($properties, $sortProperties);
+                } else {
+                    ksort($properties);
+                }
+            }
+
+            $methods = $class->getMethods($project->getConfig('include_parent_data'));
+
+            $sortMethods = $project->getConfig('sort_class_methods');
+            if ($sortMethods) {
+                if (is_callable($sortMethods)) {
+                    uksort($methods, $sortMethods);
+                } else {
+                    ksort($methods);
+                }
+            }
+
+            $constants = $class->getConstants($project->getConfig('include_parent_data'));
+
+            $sortConstants = $project->getConfig('sort_class_constants');
+            if ($sortConstants) {
+                if (is_callable($sortConstants)) {
+                    uksort($constants, $sortConstants);
+                } else {
+                    ksort($constants);
+                }
+            }
+
+            $traits = $class->getTraits($project->getConfig('include_parent_data'));
+
+            $sortTraits = $project->getConfig('sort_class_traits');
+            if ($sortTraits) {
+                if (is_callable($sortTraits)) {
+                    uksort($traits, $sortTraits);
+                } else {
+                    ksort($traits);
+                }
+            }
+
+            $sortInterfaces = $project->getConfig('sort_class_interfaces');
+            if ($sortInterfaces) {
+                $class->sortInterfaces($sortInterfaces);
+            }
+
             $variables = array(
                 'class' => $class,
-                'properties' => $class->getProperties($project->getConfig('include_parent_data')),
-                'methods' => $class->getMethods($project->getConfig('include_parent_data')),
-                'constants' => $class->getConstants($project->getConfig('include_parent_data')),
-                'traits' => $class->getTraits($project->getConfig('include_parent_data')),
+                'properties' => $properties,
+                'methods' => $methods,
+                'constants' => $constants,
+                'traits' => $traits,
                 'tree' => $this->getTree($project),
             );
 
@@ -227,12 +276,20 @@ class Renderer
         return floor((++$this->step / $this->steps) * 100);
     }
 
+    /**
+     * Get tree for the given project.
+     *
+     * @param Project $project
+     *
+     * @return array
+     */
     private function getTree(Project $project)
     {
-        if (!isset($this->cachedTree[$project])) {
-            $this->cachedTree[$project] = $this->tree->getTree($project);
+        $key = $project->getBuildDir();
+        if (!isset($this->cachedTree[$key])) {
+            $this->cachedTree[$key] = $this->tree->getTree($project);
         }
 
-        return $this->cachedTree[$project];
+        return $this->cachedTree[$key];
     }
 }

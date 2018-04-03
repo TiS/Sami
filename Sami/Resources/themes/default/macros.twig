@@ -20,7 +20,7 @@
 
 {% macro property_link(property, absolute, classonly) -%}
     <a href="{{ property_path(property) }}">
-        {{- abbr_class(property.class) }}{% if not classonly|default(true) %}#{{ property.name|raw }}{% endif -%}
+        {{- abbr_class(property.class) }}{% if not classonly|default(false) %}#{{ property.name|raw }}{% endif -%}
     </a>
 {%- endmacro %}
 
@@ -63,8 +63,8 @@
     (
         {%- for parameter in method.parameters %}
             {%- if parameter.hashint %}{{ hint_link(parameter.hint) }} {% endif -%}
-            ${{ parameter.name|raw }}
-            {%- if parameter.default %} = {{ parameter.default }}{% endif %}
+            {%- if parameter.variadic %}...{% endif %}${{ parameter.name|raw }}
+            {%- if parameter.default is not null %} = {{ parameter.default }}{% endif %}
             {%- if not loop.last %}, {% endif %}
         {%- endfor -%}
     )
